@@ -1,1 +1,100 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mario Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .mario {
+            background-image: url('https://greg.technology/android-chrome-192x192.png');
+            background-size: cover;
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            bottom: 50px;
+            left: 50px;
+        }
+        .ground {
+            background-image: url('https://t4.ftcdn.net/jpg/05/25/18/23/240_F_525182382_LstOZhMFgRO4qKjfrNfD4pSN3QVrMVef.jpg');
+            background-size: cover;
+            height: 300px;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+        .trophy {
+            background-image: url('https://www.freepnglogos.com/uploads/trophy-png/trophy-award-winner-png-33.png');
+            background-size: cover;
+            width: 100px;
+            height: 150px;
+            position: absolute;
+            bottom: 150px;
+            right: 50px;
+        }
+        .platform {
+            background-color: #D6BCFA;
+            width: 200px;
+            height: 20px;
+            position: absolute;
+            bottom: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+<body class="bg-black overflow-hidden relative h-screen">
+    <div class="ground"></div>
+    <div class="mario" id="mario"></div>
+    <div class="platform"></div>
+    <div class="trophy" id="trophy"></div>
+
+    <audio id="successSound" src="https://www.myinstants.com/media/sounds/success.mp3" preload="auto"></audio>
+
+    <script>
+        const mario = document.getElementById('mario');
+        const trophy = document.getElementById('trophy');
+        const successSound = document.getElementById('successSound');
+        let marioX = 50;
+        let marioY = 50;
+        let isJumping = false;
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'ArrowLeft') {
+                marioX -= 5;
+                mario.style.left = `${marioX}px`;
+            }
+            if (e.code === 'ArrowRight') {
+                marioX += 5;
+                mario.style.left = `${marioX}px`;
+            }
+            if (e.code === 'Space' && !isJumping) {
+                isJumping = true;
+                marioY += 150;
+                mario.style.bottom = `${marioY}px`;
+
+                setTimeout(() => {
+                    marioY -= 150;
+                    mario.style.bottom = `${marioY}px`;
+                    isJumping = false;
+                }, 500);
+            }
+
+            checkCollision();
+        });
+
+        function checkCollision() {
+            const marioRect = mario.getBoundingClientRect();
+            const trophyRect = trophy.getBoundingClientRect();
+
+            if (marioRect.right > trophyRect.left &&
+                marioRect.left < trophyRect.right &&
+                marioRect.bottom > trophyRect.top &&
+                marioRect.top < trophyRect.bottom) {
+                successSound.play();
+            }
+        }
+    </script>
+</body>
+</html>
